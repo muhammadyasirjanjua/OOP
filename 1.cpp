@@ -1,104 +1,56 @@
 #include <iostream>
 using namespace std;
 
-
-char toLower(char ch) {
-    if (ch >= 'A' && ch <= 'Z') {
-        return ch + 32;
-    }
-    return ch;
-}
-
-// Function to check if character is a letter
-bool isLetter(char ch) {
-    return (ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z');
-}
-
-int countRepeatedLetters(char* word) {
-    int freq[26] = {0};
+int findlargest(int **matrix, int rows, int columns) {
+    int largest = matrix[0][0];
     
-    // Count frequency of each letter
-    int i = 0;
-    while (word[i] != '\0') {
-        if (isLetter(word[i])) {
-            char ch = toLower(word[i]);
-            freq[ch - 'a']++;
-        }
-        i++;
-    }
-    
-    // Count total repeated letters
-    int count = 0;
-    for (int i = 0; i < 26; i++) {
-        if (freq[i] > 1) {
-            count += (freq[i] - 1);
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < columns; j++) {
+            if (*(*(matrix + i) + j) > largest) {
+                largest = *(*(matrix + i) + j);
+            }
         }
     }
     
-    return count;
+    return largest;
 }
 
 int main() {
-    int size;
+    int rows, columns;
     
-    cout << "Enter the maximum size of the string: ";
-    cin >> size;
+    cout << "Enter number of rows: ";
+    cin >> rows;
+    cout << "Enter number of columns: ";
+    cin >> columns;
     
-    // Dynamically allocate memory for the string
-    char* str = new char[size];
+    int **matrix = new int*[rows];
+    for (int i = 0; i < rows; i++) {
+        matrix[i] = new int[columns];
+    }
     
-    cout << "Enter a string: ";
-    cin.getline(str, size);
-    
-    // Allocate memory for result word
-    char* maxWord = new char[size];
-    maxWord[0] = '\0';
-    int maxRepeated = 0;
-    
-    int start = 0;
-    for (int i = 0; i <= size; i++) {
-        // Found end of word or end of string
-        if (str[i] == ' ' || str[i] == '\0' || !isLetter(str[i])) {
-            
-            int wordLen = i - start;
-            if (wordLen > 0) {
-                char* word = new char[wordLen + 1];
-                
-                for (int j = 0; j < wordLen; j++) {
-                    word[j] = str[start + j];
-                }
-                word[wordLen] = '\0';
-                
-                // Count repeated letters
-                int repeated = countRepeatedLetters(word);
-                if (repeated > maxRepeated) {
-                    maxRepeated = repeated;
-                    
-                
-                    for (int j = 0; j <= wordLen; j++) {
-                        maxWord[j] = word[j];
-                    }
-                }
-                
-                delete[] word;
-            }
-            
-            start = i + 1;
+    cout << "Enter matrix elements:" << endl;
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < columns; j++) {
+            cout << "Element [" << i << "][" << j << "]: ";
+            cin >> matrix[i][j];
         }
-        
-        if (str[i] == '\0') break;
     }
     
-    // Print result
-    if (maxRepeated > 0) {
-        cout << "Word which has the highest number of repeated letters: " << maxWord << endl;
-    } else {
-        cout << "No word with repeated letters found." << endl;
+    cout << "\nMatrix:" << endl;
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < columns; j++) {
+            cout << matrix[i][j] << " ";
+        }
+        cout << endl;
     }
     
- //free nemory
-    delete[] str;
-    delete[] maxWord;
+    int largest = findlargest(matrix, rows, columns);
+    cout << "\nLargest element in the matrix: " << largest << endl;
+    
+    for (int i = 0; i < rows; i++) {
+        delete[] matrix[i];
+    }
+    delete[] matrix;
     
     return 0;
 }

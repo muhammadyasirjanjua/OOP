@@ -1,68 +1,72 @@
 #include <iostream>
 using namespace std;
 
-int getLength(char* str) {
-    int len = 0;
-    while (str[len] != '\0') {
-        len++;
+int** construct2DArray(int* original, int originalSize, int m, int n) {
+    if (originalSize != m * n) {
+        return nullptr;
     }
-    return len;
-}
-
-// Function to check if subseq is a subsequence of main string
-int isSubsequence(char* mainStr, char* subseq) {
-    int mainLen = getLength(mainStr);
-    int subLen = getLength(subseq);
     
-    int i = 0; 
-    int j = 0; 
+    int** result = new int*[m];
+    for (int i = 0; i < m; i++) {
+        result[i] = new int[n];
+    }
     
-    // Traverse both strings
-    while (i < mainLen && j < subLen) {
-        if (mainStr[i] == subseq[j]) {
-            j++;
+    int index = 0;
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            result[i][j] = original[index];
+            index++;
         }
-        i++;
     }
     
-    // If all characters of subseq are found, return 1
-    if (j == subLen) {
-        return 1;
-    }
-    return 0;
+    return result;
 }
 
 int main() {
-    int size1, size2;
+    int originalSize, m, n;
     
-    cout << "Enter the maximum size for main string: ";
-    cin >> size1;
-    cin.ignore(); // Clear newline
+    cout << "Enter size of original array: ";
+    cin >> originalSize;
     
-    // Dynamically allocate memory for main string
-    char* mainStr = new char[size1];
+    int* original = new int[originalSize];
     
-    cout << "Enter the main string: ";
-    cin.getline(mainStr, size1);
+    cout << "Enter " << originalSize << " elements:" << endl;
+    for (int i = 0; i < originalSize; i++) {
+        cout << "Element " << i << ": ";
+        cin >> original[i];
+    }
     
-    cout << "Enter the maximum size for subsequence: ";
-    cin >> size2;
-    cin.ignore();
+    cout << "Enter number of rows (m): ";
+    cin >> m;
+    cout << "Enter number of columns (n): ";
+    cin >> n;
     
-    // Dynamically allocate memory for subsequence
-    char* subseq = new char[size2];
+    int** result = construct2DArray(original, originalSize, m, n);
     
-    cout << "Enter the subsequence: ";
-    cin.getline(subseq, size2);
+    if (result == nullptr) {
+        cout << "\nImpossible to create " << m << "x" << n << " array from " 
+             << originalSize << " elements." << endl;
+        cout << "Empty array returned (conversion not possible)." << endl;
+    } else {
+        cout << "\n2D Array (" << m << "x" << n << "):" << endl;
+        for (int i = 0; i < m; i++) {
+            cout << "[";
+            for (int j = 0; j < n; j++) {
+                cout << result[i][j];
+                if (j < n - 1) cout << ",";
+            }
+            cout << "]";
+            if (i < m - 1) cout << endl;
+        }
+        cout << endl;
+        
+        for (int i = 0; i < m; i++) {
+            delete[] result[i];
+        }
+        delete[] result;
+    }
     
-    // Check if subseq is a subsequence of mainStr
-    int result = isSubsequence(mainStr, subseq);
-    
-    cout << "Output: " << result << endl;
-    
-    // Free memory
-    delete[] mainStr;
-    delete[] subseq;
+    delete[] original;
     
     return 0;
 }

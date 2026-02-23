@@ -1,85 +1,73 @@
 #include <iostream>
 using namespace std;
 
-
-int* resizeArray(int* arr, int& capacity) {
-    int newCapacity = capacity * 2;
+int diagonalSum(int** matrix, int size) {
+    int sum = 0;
     
-    // Allocate new array with larger capacity
-    int* newArr = new int[newCapacity];
-    
-for (int i = 0; i < capacity; i++) {
-        newArr[i] = arr[i];
-    }
-    
-    // Delete old array
-    delete[] arr;
-    
-    // Update capacity
-    capacity = newCapacity;
-    
-    cout << "Array resized! New capacity: " << capacity << endl;
-    
-    return newArr;
-}
-
-// Function to print array
-void printArray(int* arr, int size) {
-    cout << "Array elements: ";
     for (int i = 0; i < size; i++) {
-        cout << arr[i];
-        if (i < size - 1) {
-            cout << ", ";
-        }
+        sum += matrix[i][i];
     }
-    cout << endl;
+    
+    for (int i = 0; i < size; i++) {
+        sum += matrix[i][size - 1 - i];
+    }
+    
+    if (size % 2 != 0) {
+        int center = size / 2;
+        sum -= matrix[center][center];
+    }
+    
+    return sum;
 }
 
 int main() {
-    int initialCapacity;
+    int size;
     
-    cout << "Enter initial capacity of the array: ";
-    cin >> initialCapacity;
+    cout << "Enter size of square matrix: ";
+    cin >> size;
     
-    // Dynamically allocate initial array
-    int* arr = new int[initialCapacity];
-    int capacity = initialCapacity;
-    int size = 0; // Current number of elements
-    
-    cout << "Enter integers (enter -1 to stop):" << endl;
-    
-    int value;
-    while (true) {
-        cout << "Enter value: ";
-        cin >> value;
-        
-        // Check for sentinel value
-        if (value == -1) {
-            break;
-        }
-        
-        // Check if array is full
-        if (size == capacity) {
-            cout << "Array is full! Resizing..." << endl;
-            arr = resizeArray(arr, capacity);
-        }
-        
-        // Add element to array
-        arr[size] = value;
-        size++;
-        
-        cout << "Element added. Current size: " << size << "/" << capacity << endl;
+    int** matrix = new int*[size];
+    for (int i = 0; i < size; i++) {
+        matrix[i] = new int[size];
     }
     
-    // Display final array
-    cout << "\n--- Final Array ---" << endl;
-    cout << "Total elements: " << size << endl;
-    cout << "Final capacity: " << capacity << endl;
-    printArray(arr, size);
+    cout << "Enter matrix elements:" << endl;
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            cout << "Element [" << i << "][" << j << "]: ";
+            cin >> matrix[i][j];
+        }
+    }
     
-    // Free memory
-    delete[] arr;
+    cout << "\nMatrix:" << endl;
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            cout << matrix[i][j] << "\t";
+        }
+        cout << endl;
+    }
+    
+    int sum = diagonalSum(matrix, size);
+    cout << "\nSum of diagonals: " << sum << endl;
+    
+    cout << "\nPrimary diagonal: ";
+    for (int i = 0; i < size; i++) {
+        cout << matrix[i][i];
+        if (i < size - 1) cout << " + ";
+    }
+    cout << endl;
+    
+    cout << "Secondary diagonal: ";
+    for (int i = 0; i < size; i++) {
+        cout << matrix[i][size - 1 - i];
+        if (i < size - 1) cout << " + ";
+    }
+    cout << endl;
+    
+    for (int i = 0; i < size; i++) {
+        delete[] matrix[i];
+    }
+    delete[] matrix;
     
     return 0;
 }
-
