@@ -1,42 +1,68 @@
 #include <iostream>
 using namespace std;
 
-int* reverseArray(int arr[], int size) {
-    for (int i = 0; i < size / 2; i++){
-	
-        // Swap elements from start and end
-        int temp = arr[i];
-        arr[i] = arr[size - 1 - i];
-        arr[size - 1 - i] = temp;
+int getLength(char* str) {
+    int len = 0;
+    while (str[len] != '\0') {
+        len++;
     }
-    return arr;
+    return len;
 }
 
+// Function to check if subseq is a subsequence of main string
+int isSubsequence(char* mainStr, char* subseq) {
+    int mainLen = getLength(mainStr);
+    int subLen = getLength(subseq);
+    
+    int i = 0; 
+    int j = 0; 
+    
+    // Traverse both strings
+    while (i < mainLen && j < subLen) {
+        if (mainStr[i] == subseq[j]) {
+            j++;
+        }
+        i++;
+    }
+    
+    // If all characters of subseq are found, return 1
+    if (j == subLen) {
+        return 1;
+    }
+    return 0;
+}
 
 int main() {
-    int n;
+    int size1, size2;
     
-    cout << "Enter the number of elements: ";
-    cin >> n;
+    cout << "Enter the maximum size for main string: ";
+    cin >> size1;
+    cin.ignore(); // Clear newline
     
-    int arr[n];
+    // Dynamically allocate memory for main string
+    char* mainStr = new char[size1];
     
-    cout << "Enter " << n << " elements: ";
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
-    }
-    cout << "\nOriginal array: ";
-    for (int i = 0; i < n; i++) {
-        cout << arr[i] << " ";
-    }
+    cout << "Enter the main string: ";
+    cin.getline(mainStr, size1);
     
-    reverseArray(arr, n);
+    cout << "Enter the maximum size for subsequence: ";
+    cin >> size2;
+    cin.ignore();
     
-    cout << "\nReversed array: ";
-    for (int i = 0; i < n; i++) {
-        cout << arr[i] << " ";
-    }
-    cout << endl;
+    // Dynamically allocate memory for subsequence
+    char* subseq = new char[size2];
+    
+    cout << "Enter the subsequence: ";
+    cin.getline(subseq, size2);
+    
+    // Check if subseq is a subsequence of mainStr
+    int result = isSubsequence(mainStr, subseq);
+    
+    cout << "Output: " << result << endl;
+    
+    // Free memory
+    delete[] mainStr;
+    delete[] subseq;
     
     return 0;
 }
